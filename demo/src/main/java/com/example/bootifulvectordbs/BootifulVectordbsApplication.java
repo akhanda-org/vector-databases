@@ -26,7 +26,7 @@ public class BootifulVectordbsApplication {
         return new TokenTextSplitter();
     }
 
-    private final boolean ingest = false;
+    private final boolean ingest = true;
 
     @Bean
     ApplicationRunner demo(
@@ -37,7 +37,7 @@ public class BootifulVectordbsApplication {
             var products = db.sql("select * from products")
                     .query(new DataClassRowMapper<>(Product.class))
                     .list();
-
+            System.out.println(products.size());
             if (this.ingest) {
 
                 products
@@ -53,6 +53,7 @@ public class BootifulVectordbsApplication {
                                     ));
 
                             var split = tokenTextSplitter.apply(List.of(document));
+                            System.out.println(split);
                             vectorStore.add(split);
                         });
 
@@ -65,7 +66,7 @@ public class BootifulVectordbsApplication {
 //                    .getFirst();
 
             var similar = vectorStore
-                    .similaritySearch(  SearchRequest.query("cold weather").withTopK(10) );
+                    .similaritySearch(  SearchRequest.query("cool weather").withTopK(10) );
             System.out.println("count: "+similar.size());
             for (var s : similar) {
                 System.out.println("===========");
